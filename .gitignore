@@ -1,0 +1,15 @@
+# Ignore internal version control system
+.vcs/
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE or editor folders
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db

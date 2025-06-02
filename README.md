@@ -56,6 +56,43 @@ python main.py merge dev
 └── staging_area.json     ← List of files staged for commit
 ```
 
+## Example Output
+
+### 1. Initializing a Repository
+```bash
+$ python main.py init
+Initialized empty VCS repository in .vcs/
+```
+
+### 2. Staging and Committing
+```bash
+$ python main.py add file.txt
+Added 'file.txt' to staging area.
+
+$ python main.py commit -m "First commit"
+[a1b2c3d] First commit
+```
+
+### 3. Viewing History
+```bash
+$ python main.py log
+Commit: a1b2c3d
+Message: First commit
+Date: 2025-06-01 21:10:11
+```
+
+### 4. Branching and Merging
+```bash
+$ python main.py branch dev
+Created branch 'dev' at commit a1b2c3d
+
+$ python main.py checkout dev
+Switched to branch 'dev' at commit a1b2c3d
+
+$ python main.py merge dev
+Merge complete. Created commit e4f5g6h
+```
+
 ## Requirements
 
 - Python 3.x
