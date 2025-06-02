@@ -260,7 +260,7 @@ def merge_branch(branch_name):
     commit_id = hashlib.sha1(f"{message}{timestamp}".encode()).hexdigest()[:7]
 
     merged_commit = {
-        "id": commit_id,
+        "commit_id": commit_id,
         "message": message,
         "timestamp": timestamp,
         "files": merged_files,
