@@ -4,7 +4,7 @@ import os
 import json
 import hashlib
 import time
-
+from datetime import datetime
 
 def init_repo():
     #create the .vcs folder and subfoulders
@@ -122,4 +122,39 @@ def commit_changes(message):
     #print a confirmation message
     print(f"[{commit_id}] {message}")
 
+def show_log():
+    # Read the current branch from .vcs/HEAD
+    if not os.path.exists(".vcs/HEAD"):
+        print("No repository found. Run 'init' first.")
+        return
+    with open(".vcs/HEAD", "r") as f:
+        current_branch = f.read().strip()
     
+    # Get the latest commit ID for that branch from .vcs/branches/<branch>
+    branch_path = f".vcs/branches/{current_branch}"
+    if not os.path.exists(branch_path):
+        print(f"No commits found on this branch.")
+        return
+    with open(branch_path, "r") as f:
+        commit_id = f.read().strip()
+    if not commit_id:
+        print("Branch has no commits yet.")
+    
+    # Follow the parent chain backward through commit files
+    while commit_id:
+        commit_path = f".vcs/commits/{commit_id}.json"
+        if not os.path.exists(commit_path):
+            break
+
+        with open(commit_path, "r") as f:
+            commit = json.load(f)
+        
+        # Print commit details
+        date_str = datetime.fromtimestamp(commit["timestamp"]).strftime("%Y-%m-%d %H:%M:%S")
+
+        print(f"Commit: {commit['commit_id']}")
+        print(f"Message: {commit['message']}")
+        print(f"Date: {date_str}\n")
+
+        commit_id = commit["parent"]
+
