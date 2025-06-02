@@ -1,6 +1,7 @@
 #vcs.core.py
 
 import os
+import json
 
 def init_repo():
     #create the .vcs folder and subfoulders
@@ -16,3 +17,17 @@ def init_repo():
         branch_file.write("")
 
     print("Initalized empty VCS repository in .vcs/")
+
+def add_file(filename):
+
+    #check if repo exist:
+    if not os.path.exists(".vcs"):
+        print("Error: Repository not initalized. Run 'init' first.")
+        return
+    
+    #check if the file to add actually exists
+    if not os.path.exists(filename):
+        print(f"Error: file '{filename}' not found.")
+        return
+    
+    
