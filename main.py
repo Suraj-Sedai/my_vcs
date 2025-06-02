@@ -1,5 +1,5 @@
 import argparse
-from vcs.core import init_repo, add_file
+from vcs.core import init_repo, add_file, commit_changes
 def main():
     parser = argparse.ArgumentParser(description="Mini VCS")
     subparsers = parser.add_subparsers(dest='command')
