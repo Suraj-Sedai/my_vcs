@@ -1,5 +1,5 @@
 import argparse
-from vcs.core import init_repo, add_file, commit_changes, show_log, create_branch
+from vcs.core import init_repo, add_file, commit_changes, show_log, create_branch, checkout_branch
 def main():
     parser = argparse.ArgumentParser(description="Mini VCS")
     subparsers = parser.add_subparsers(dest='command')
@@ -22,6 +22,11 @@ def main():
     branch_parser = subparsers.add_parser("branch", help="Create a new branch")
     branch_parser.add_argument("branch_name", help="Name of the new branch")
     
+    #'checkout' command to switch to a branch
+    checkout_parser = subparsers.add_parser("checkout", help="Switch to a branch")
+    checkout_parser.add_argument("branch_name", help="Name of the branch to switch to")
+
+
     #read the user;s command and handel it
     args = parser.parse_args()
     #check if the command is 'init'
@@ -35,6 +40,8 @@ def main():
         show_log()
     elif args.command == "branch":
         create_branch(args.branch_name)
+    elif args.command == "checkout":
+        checkout_branch(args.branch_name)
     else:
         print("Invalid command. Try python main.py init")
 

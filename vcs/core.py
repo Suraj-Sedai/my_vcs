@@ -187,3 +187,38 @@ def create_branch(branch_name):
 
     # Show a success message
     print(f"Created branch '{branch_name}' at commit {current_commit_id or '(no commits yet)'}")
+
+def checkout_branch(name):
+   
+    # Check if the branch exists
+    branch_path = f".vcs/branches/{name}"
+    if not os.path.exists(branch_path):
+        print(f"Error: Branch '{name}' does not exist.")
+        return
+    
+    # Get the commit ID it points to
+    with open(branch_path, "r") as f:
+        commit_id = f.read().strip()
+
+    if not commit_id:
+        print(f"Branch '{name}' has no commits yet.")
+        return
+
+    # Load the commit file
+    commit_path = f".vcs/commits/{commit_id}.json"
+    if not os.path.exists(commit_path):
+        print(f"Error: Commit '{commit_id}' does not exist.")
+        return
+    with open(commit_path, "r") as f:
+        commit_data = json.load(f)
+
+    # For each file in the commit, overwrite the current version
+    for filename, content in commit_data['files'].items():
+        with open(filename, "w") as f:
+            f.write(content)
+    # Update .vcs/HEAD to point to the new branch
+    with open(".vcs/HEAD", "w") as f:
+        f.write(name)
+        
+    # Print a success message
+    print(f"Switched to branch '{name}' at commit {commit_id}")
