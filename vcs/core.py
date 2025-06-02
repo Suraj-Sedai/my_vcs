@@ -158,3 +158,32 @@ def show_log():
 
         commit_id = commit["parent"]
 
+def create_branch(branch_name):
+    # Read the current branch name from .vcs/HEAD
+    head_path = ".vcs/HEAD"
+    if not os.path.exists(head_path):
+        print("No repository found. Run 'init' first.")
+        return
+    with open(head_path, "r") as f:
+        current_branch = f.read().strip()
+
+    # Get that branch’s latest commit ID from .vcs/branches/<current_branch>
+    branch_path = f".vcs/branches/{current_branch}"
+    if not os.path.exists(branch_path):
+        print("Error: Current branch not found.")
+        return
+    with open(branch_path, "r") as f:
+        current_commit_id = f.read().strip()
+    
+    # Create a new file: .vcs/branches/<new_branch>
+    new_branch_path = f".vcs/branches/{branch_name}"
+    if os.path.exists(new_branch_path):
+        print(f"Branch '{branch_name}' already exists.")
+        return
+
+    # Write the current commit ID into that file
+    with open(new_branch_path, "w") as f:
+        f.write(current_commit_id)
+
+    # Show a success message
+    print(f"Created branch '{branch_name}' at commit {current_commit_id or '(no commits yet)'}")
