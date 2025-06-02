@@ -11,6 +11,10 @@ def main():
     add_parser.add_argument("filename", help= "Name of the file to add")
     ## add_argument = parser.parse_args()
 
+    #'add' commint command to CLI
+    commit_parser = subparsers.commit_parser("commit", help = "Commit changes")
+    commit_parser.add_argument("-m", "--message", required=True, help="Commit message")
+
     #read the user;s command and handel it
     args = parser.parse_args()
     #check if the command is 'init'
@@ -18,6 +22,8 @@ def main():
         init_repo()
     elif args.command == "add":
         add_file(args.filename)
+    elif args.command == "commit":
+        commit_changes(args.message)
     else:
         print("Invalid command. Try python main.py init")
 
