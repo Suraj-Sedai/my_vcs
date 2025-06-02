@@ -1,9 +1,5 @@
 #vcs.core.py
-
-import os
-import json
-import hashlib
-import time
+import os,json,hashlib,time
 from datetime import datetime
 
 def init_repo():
@@ -222,3 +218,61 @@ def checkout_branch(name):
         
     # Print a success message
     print(f"Switched to branch '{name}' at commit {commit_id}")
+
+
+def merge_branch(branch_name):
+    # Read both commits
+    head_path = ".vcs/HEAD"
+    if not os.path.exists(head_path):
+        print("No repository found. Run 'init' first.")
+        return
+    
+    with open(head_path, "r") as f:
+        current_branch = f.read().strip()
+
+    current_branch_path = f".vcs/branches/{current_branch}"
+    merge_branch_path = f".vcs/branches/{branch_name}"
+    
+    if not os.path.exists(merge_branch_path):
+        print(f"Error: Branch '{branch_name}' does not exist.")
+        return
+    
+    with open(current_branch_path, "r") as f:
+        current_commit= f.read().strip()
+
+    with open(merge_branch_path, "r") as f:
+        merge_commit= f.read().strip()
+    
+    '''load both commit files'''
+    with open(f".vcs/commits/{current_commit}.json", "r") as f:
+        current_data = json.load(f)
+    with open(f".vcs/commits/{merge_commit}.json", "r") as f:
+        merge_data = json.load(f)
+
+    # Merge their files (prefer current branch if conflicts)
+    merged_files = merge_data['files'].copy()
+    merged_files.update(current_data['files'])   #this way current wins if conflicts
+
+
+    # Create a new commit with two parents
+    message = f"Merged branch '{branch_name}' into '{current_branch}'"
+    timestamp = time.time()
+    commit_id = hashlib.sha1(f"{message}{timestamp}".encode()).hexdigest()[:7]
+
+    merged_commit = {
+        "id": commit_id,
+        "message": message,
+        "timestamp": timestamp,
+        "files": merged_files,
+        "parent": [current_commit, merge_commit]
+    }
+
+    with open(f".vcs/commits/{commit_id}.json", "w") as f:
+        json.dump(merged_commit, f, indent=2)
+
+    # Point the current branch to that new commit
+    with open(current_branch_path, "w") as f:
+        f.write(commit_id)
+
+    # Print a success message
+    print(f"Merge complete. Created commit {commit_id}")
