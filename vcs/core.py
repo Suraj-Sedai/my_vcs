@@ -18,6 +18,7 @@ def init_repo():
 
     print("Initalized empty VCS repository in .vcs/")
 
+
 def add_file(filename):
 
     #check if repo exist:
@@ -30,4 +31,21 @@ def add_file(filename):
         print(f"Error: file '{filename}' not found.")
         return
     
-    
+    #set the path to staging file and lost it(or create it)
+    staging_path = ".vcs/staging_area.json"
+
+    #try to load existing staged files
+    if os.path.exists(staging_path):
+        with open(staging_path, "r") as f:
+            staged_files = json.load(f)
+    else:
+        staged_files = []
+
+    if filename not in staged_files:
+        staged_files.append(filename)
+        print(f"Added '{filename}' to staging area.")
+    else:
+        print(f"'{filename}' is already staged.")
+
+    with open(staging_path, "w") as f:
+        json.dump(staged_files,f, indent=2)
