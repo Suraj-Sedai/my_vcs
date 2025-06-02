@@ -12,7 +12,7 @@ def main():
     ## add_argument = parser.parse_args()
 
     #'add' commint command to CLI
-    commit_parser = subparsers.commit_parser("commit", help = "Commit changes")
+    commit_parser = subparsers.add_parser("commit", help = "Commit changes")
     commit_parser.add_argument("-m", "--message", required=True, help="Commit message")
 
     #read the user;s command and handel it
